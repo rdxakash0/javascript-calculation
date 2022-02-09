@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="error" style="color: red;"></div>
+<input type="hidden" id="item_counter" value="1" >
+
+<table id="tbl_test" border="1px solid">
+  <thead>
+    <th>quantity</th>
+    <th>unit</th>
+    <th>price</th>
+    <th>action</th>
+  </thead>
+  <tbody id="test">
+
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2">Total Price</td>
+      <td id="total_price"></td>
+    </tr>
+  </tfoot>
+</table>
+
+
+<script>
+
+$(document).ready(function(){
+  var item_counter = 1 ;
+  var html = '<tr><td><input type="text" id="one' + item_counter + '" class="qty" onkeyup="po_calculation(' + item_counter + ')"></td><td><input type="text" id="two' + item_counter + '" onkeyup="po_calculation(' + item_counter + ')"></td><td><input type="text" id="price' + item_counter + '" class="price" readonly></td><td><button type="button" class="add">Add (+)</button></td></tr>';
+   $("#test").html(html) ;
+   total_cal();
+
+   $("#item_counter").val(item_counter);
+});
+
+$('#test').on('click','.add',function(){
+  var item_counter=parseInt($("#item_counter").val());
+  item_counter +=1;
+  $("#item_counter").val(item_counter);
+  var html = '<tr><td><input type="text" id="one' + item_counter + '" class="qty" onkeyup="po_calculation(' + item_counter + ')"></td><td><input type="text" id="two' + item_counter + '" onkeyup="po_calculation(' + item_counter + ')"></td><td><input type="text" id="price' + item_counter + '" class="price" readonly></td><td><button type="button" class="delete">delete (-)</button></td></tr>';
+   $("#test").append(html) ;
+   total_cal();
+
+
+});
+
+$('#test').on('click','.delete',function(){
+  var rowcount= $()
+  $(this).parent().parent().remove();
+  po_calculation();
+});
+
+function po_calculation(sl){
+  var qty = $("#one"+sl).val();
+  var unit_price = $("#two"+sl).val();
+  var po_price = unit_price*qty
+  var price = $("#price"+sl).val(po_price);
+  total_cal();
+
+}
+function total_cal(){
+  var gr_tot = 0;
+  $(".price").each(function(){
+    isNaN(this.value) || 0 == this.value.length || (gr_tot +=parseFloat(this.value))
+  });
+  $("#total_price").text(gr_tot);
+}
+$(document).on('keyup','.price',function(){
+  total_cal();
+});
+</script>
+
+</body>
+</html>
